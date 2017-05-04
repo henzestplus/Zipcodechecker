@@ -28,8 +28,7 @@ class googleHandler extends zipCodeCheckerchainHandler
     private function fetchAddressDetailsFromGoogle(Pendant $pendant): Address
     {
         $googleResult = new Address();
-        echo $address = $this->formatAddressStringForGoogle($pendant);
-        echo PHP_EOL;
+        $address = $this->formatAddressStringForGoogle($pendant);
         if ($pendant->attributeExists('street')) {
             $googleResults = $this->getAddressCollectionFromGoogle($address);
             if ($googleResults->count() > 0) {
