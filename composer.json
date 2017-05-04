@@ -1,0 +1,12 @@
+{
+    "require": {
+        "willdurand/geocoder": "^3.3",
+        "php-http/guzzle6-adapter": "^1.1",
+        "freshheads/postcode-api-client": "^3.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Stplus\\": "classes/"
+        }
+    }
+}
