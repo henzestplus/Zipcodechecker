@@ -10,7 +10,7 @@ class PendantTest extends \PHPUnit_Framework_TestCase
         $pendant->setAttribute('test', 'string');
         $sExpected = 'string';
         $sActual = $pendant->getAttribute('test');
-        $this->assertEqual($sExpected,$sActual);
+        $this->assertEquals($sExpected,$sActual);
     }
 
     public function testGetNotExistingAttribute()

@@ -7,9 +7,9 @@ use GuzzleHttp as GuzzleHTTP;
 use FH\PostcodeAPI as PostcodeApi;
 
 use Stplus\Chain\Pendant;
-use Stplus\Chain\ZipcodeChecker\zipCodeCheckerchainHandler;
+use Stplus\Chain\ZipcodeChecker\zipCodeCheckerChainHandler;
 
-class postcodeApiHandler extends zipCodeCheckerchainHandler
+class postcodeApiHandler extends zipCodeCheckerChainHandler
 {
     private $apiClient;
 

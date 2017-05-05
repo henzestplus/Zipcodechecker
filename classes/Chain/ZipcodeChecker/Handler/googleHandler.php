@@ -9,9 +9,9 @@ use Geocoder\Provider\GoogleMaps;
 
 use Ivory\HttpAdapter\CurlHttpAdapter;
 use Stplus\Chain\Pendant;
-use Stplus\Chain\ZipcodeChecker\zipCodeCheckerchainHandler;
+use Stplus\Chain\ZipcodeChecker\zipCodeCheckerChainHandler;
 
-class googleHandler extends zipCodeCheckerchainHandler
+class googleHandler extends zipCodeCheckerChainHandler
 {
     private $geocoder;
 

@@ -3,9 +3,9 @@
 namespace Stplus\Chain\ZipcodeChecker\Handler;
 
 use Stplus\Chain\Pendant;
-use Stplus\Chain\ZipcodeChecker\zipCodeCheckerchainHandler;
+use Stplus\Chain\ZipcodeChecker\zipCodeCheckerChainHandler;
 
-class proxyHandler extends zipCodeCheckerchainHandler
+class proxyHandler extends zipCodeCheckerChainHandler
 {
     public function handle(Pendant $pendant): bool
     {

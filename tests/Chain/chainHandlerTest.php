@@ -19,7 +19,8 @@ class chainHandlerTest extends \PHPUnit_Framework_TestCase
         $chainHandler->method('verifyPendantType')
             ->willReturn(true);
 
-        $chainHandler->start(new Pendant());
+        $bExpected = $chainHandler->start(new Pendant());
+        $this->assertFalse($bExpected);
     }
 
     public function testVerifyPendantTypeFailure()
@@ -87,7 +88,8 @@ class chainHandlerTest extends \PHPUnit_Framework_TestCase
 
         $oChainHandler3->method('handle')
             ->willReturn(false);
-        $oChainHandler3->setNextHandler($oChainHandler2);
+        $oChainHandler2->setNextHandler($oChainHandler3);
+
         $oChainHandler3->expects($this->never())->method('start');
 
         $aActual = $oChainHandler->start(new Pendant());

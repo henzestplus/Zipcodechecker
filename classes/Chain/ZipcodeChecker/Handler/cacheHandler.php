@@ -3,9 +3,9 @@
 namespace Stplus\Chain\ZipcodeChecker\Handler;
 
 use Stplus\Chain\Pendant;
-use Stplus\Chain\ZipcodeChecker\zipCodeCheckerchainHandler;
+use Stplus\Chain\ZipcodeChecker\zipCodeCheckerChainHandler;
 
-class cacheHandler extends zipcodeCheckerChainHandler
+class cacheHandler extends zipCodeCheckerChainHandler
 {
     private $memcacheD;
 
@@ -19,10 +19,15 @@ class cacheHandler extends zipcodeCheckerChainHandler
         return $this->addCachedResultsIfExistsTo($pendant);
     }
 
+    protected function getFromCache(string $key):array
+    {
+        return $this->memcacheD->get($key);
+    }
+
     private function addCachedResultsIfExistsTo(Pendant $pendant): bool
     {
         $key = $pendant->getAttribute('zipcode') . $pendant->getAttribute('streetnumber');
-        $cached = $this->memcacheD->get($key);
+        $cached = $this->getFromCache($key);
         if ($cached) {
             $pendant->setAttributesArray($cached);
             if (!$pendant->attributeExists('original_source')) {
