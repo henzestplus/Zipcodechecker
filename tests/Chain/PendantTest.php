@@ -1,41 +1,52 @@
 <?php
 
-class PendantTest extends PHPUnit_Framework_TestCase
+namespace Stplus\Chain;
+
+class PendantTest extends \PHPUnit_Framework_TestCase
 {
     public function testSetAttribute()
     {
-        $pendant = new \Stplus\Chain\Pendant();
+        $pendant = new Pendant();
         $pendant->setAttribute('test', 'string');
-        $this->assertEquals('string',$pendant->getAttribute('test'));
+        $sExpected = 'string';
+        $sActual = $pendant->getAttribute('test');
+        $this->assertEqual($sExpected,$sActual);
     }
 
     public function testGetNotExistingAttribute()
     {
         $this->expectException('RuntimeException');
-        $pendant = new \Stplus\Chain\Pendant();
+        $pendant = new Pendant();
         $pendant->setAttribute('test', 'string');
         $pendant->getAttribute('test2');
     }
 
     public function testAttributeExists()
     {
-        $pendant = new \Stplus\Chain\Pendant();
+        $pendant = new Pendant();
         $pendant->setAttribute('test', 'string');
-        $this->assertTrue($pendant->attributeExists('test'));
+        $bActual = $pendant->attributeExists('test');
+        $this->assertTrue($bActual);
     }
 
     public function testAttributeNotExists()
     {
-        $pendant = new \Stplus\Chain\Pendant();
+        $pendant = new Pendant();
         $pendant->setAttribute('test', 'string');
-        $this->assertNotTrue($pendant->attributeExists('test2'));
+        $bActual = $pendant->attributeExists('test2');
+        $this->assertNotTrue($bActual);
     }
 
     public function testSetAttributeArray()
     {
-        $array = array('zipcode'=>'3443HZ','streetnumber'=>7,'coordinates'=>true, 'object'=> new stdClass());
-        $pendant = new \Stplus\Chain\Pendant();
-        $pendant->setAttributesArray($array);
-        $this->assertEquals($array, $pendant->getAttributesArray());
+        $aExpected = array('zipcode'=>'3443HZ',
+            'streetnumber'=>7,
+            'coordinates'=>true,
+            'object'=> new \stdClass()
+        );
+        $pendant = new Pendant();
+        $pendant->setAttributesArray($aExpected);
+        $aActual = $pendant->getAttributesArray();
+        $this->assertEquals($aExpected, $aActual);
     }
 }
