@@ -7,6 +7,13 @@ use Stplus\Chain\ZipcodeChecker\zipCodeCheckerchainHandler;
 
 class cacheHandler extends zipcodeCheckerChainHandler
 {
+    private $memcacheD;
+
+    public function __construct(\Memcached $memcacheD)
+    {
+        $this->memcacheD = $memcacheD;
+    }
+
     protected function handle(Pendant $pendant): bool
     {
         return $this->addCachedResultsIfExistsTo($pendant);
@@ -14,9 +21,8 @@ class cacheHandler extends zipcodeCheckerChainHandler
 
     private function addCachedResultsIfExistsTo(Pendant $pendant): bool
     {
-        global $memcacheD;
         $key = $pendant->getAttribute('zipcode') . $pendant->getAttribute('streetnumber');
-        $cached = $memcacheD->get($key);
+        $cached = $this->memcacheD->get($key);
         if ($cached) {
             $pendant->setAttributesArray($cached);
             if (!$pendant->attributeExists('original_source')) {

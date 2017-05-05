@@ -8,7 +8,7 @@ use Stplus\Chain\ZipcodeChecker;
 
 //we instantiëren nu de handlers voor de ketting
 $chain = [];
-$chain[] = new ZipcodeChecker\Handler\cacheHandler();
+$chain[] = new ZipcodeChecker\Handler\cacheHandler($memcacheD);
 $chain[] = new ZipcodeChecker\Handler\googleHandler();
 $chain[] = new ZipcodeChecker\Handler\postcodeApiHandler();
 $chain[] = new ZipcodeChecker\Handler\proxyHandler(); //we voegen even een simpele class om een idee te krijgen van een proxy.
