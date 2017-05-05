@@ -2,7 +2,8 @@
     "require": {
         "willdurand/geocoder": "^3.3",
         "php-http/guzzle6-adapter": "^1.1",
-        "freshheads/postcode-api-client": "^3.0"
+        "freshheads/postcode-api-client": "^3.0",
+        "phpunit/phpunit": "^5.6"
     },
     "autoload": {
         "psr-4": {

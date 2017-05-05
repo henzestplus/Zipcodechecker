@@ -16,7 +16,7 @@ class Pendant
         if ($this->attributeExists($name)) {
             return $this->data[$name];
         } else {
-            throw new Exception("No value exists with that name: $name");
+            throw new \RuntimeException("No value exists with that name: $name");
         }
     }
 
