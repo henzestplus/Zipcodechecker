@@ -12,15 +12,23 @@ use Stplus\Chain\ZipcodeChecker\addressPendant;
 
 class cacheHandlerTest extends \PHPUnit_Framework_TestCase
 {
-    public function testCacheHandlerSuccess()
+    private $cacheHandler;
+    private $oPendant;
+
+    public function setUp()
     {
-        $cacheHandler = $this->getMockBuilder(cacheHandler::class)
+        $this->cacheHandler = $this->getMockBuilder(cacheHandler::class)
             ->disableOriginalConstructor()
             ->setMethods(array(
                 'getFromCache'
             ))
             ->getMock();
 
+        $this->oPendant = new addressPendant('11','2516AC','Nederland');
+    }
+
+    public function testCacheHandlerSuccess()
+    {
         $aExpected = array(
             'street'=>'Regulusweg',
             'streetnumber'=>'11',
@@ -29,7 +37,7 @@ class cacheHandlerTest extends \PHPUnit_Framework_TestCase
             'source'=>'cache',
             'original_source'=>'unittest'
         );
-        $cacheHandler->method('getFromCache')
+        $this->cacheHandler->method('getFromCache')
             ->willReturnCallback(function($key){
                 $aReturn = array(
                     'street'=>'Regulusweg',
@@ -43,31 +51,23 @@ class cacheHandlerTest extends \PHPUnit_Framework_TestCase
                 }
                 return array();
             });
-        $oPendant = new addressPendant('11','2516AC','Nederland');
-        $cacheHandler->start($oPendant);
-        $aActual = $oPendant->getAttributesArray();
+
+        $this->cacheHandler->start($this->oPendant);
+        $aActual = $this->oPendant->getAttributesArray();
         $this->assertEquals($aExpected,$aActual);
     }
 
     public function testCacheHandlerFailure()
     {
-        $cacheHandler = $this->getMockBuilder(cacheHandler::class)
-            ->disableOriginalConstructor()
-            ->setMethods(array(
-                'getFromCache'
-            ))
-            ->getMock();
-
         $aExpected = array(
             'streetnumber'=>'11',
             'zipcode'=>'2516AC',
             'country'=>'Nederland',
         );
-        $cacheHandler->method('getFromCache')
+        $this->cacheHandler->method('getFromCache')
             ->willReturn(array());
-        $oPendant = new addressPendant('11','2516AC','Nederland');
-        $cacheHandler->start($oPendant);
-        $aActual = $oPendant->getAttributesArray();
+        $this->cacheHandler->start($this->oPendant);
+        $aActual = $this->oPendant->getAttributesArray();
         $this->assertEquals($aExpected,$aActual);
     }
 }

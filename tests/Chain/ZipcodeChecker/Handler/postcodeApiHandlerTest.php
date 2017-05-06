@@ -8,8 +8,8 @@
 
 namespace Stplus\Chain\ZipcodeChecker\Handler;
 
-
 use Stplus\Chain\ZipcodeChecker\addressPendant;
+use FH\PostcodeAPI\Client;
 
 class postcodeApiHandlerTest extends \PHPUnit_Framework_TestCase
 {
@@ -18,7 +18,7 @@ class postcodeApiHandlerTest extends \PHPUnit_Framework_TestCase
     private $oPendant;
 
     public function setUp(){
-        $this->oMockedPostcodeApiClient = $this->getMockBuilder('\FH\PostcodeAPI\Client')
+        $this->oMockedPostcodeApiClient = $this->getMockBuilder(Client::class)
             ->disableOriginalConstructor()
             ->setMethods(array('getAddresses'))
             ->getMock();
