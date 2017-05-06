@@ -13,16 +13,28 @@ use Stplus\Chain\ZipcodeChecker\addressPendant;
 
 class postcodeApiHandlerTest extends \PHPUnit_Framework_TestCase
 {
+    private $oMockedPostcodeApiClient;
+    private $oApiHandler;
+    private $oPendant;
+
+    public function setUp(){
+        $this->oMockedPostcodeApiClient = $this->getMockBuilder('\FH\PostcodeAPI\Client')
+            ->disableOriginalConstructor()
+            ->setMethods(array('getAddresses'))
+            ->getMock();
+
+        $this->oApiHandler = new postcodeApiHandler();
+        $ref = new \ReflectionProperty(get_class($this->oApiHandler),'apiClient');
+        $ref->setAccessible(true);
+        $ref->setValue($this->oApiHandler, $this->oMockedPostcodeApiClient);
+        $ref->setAccessible(false);
+
+        $this->oPendant = new addressPendant('11','2516 AC','Nederland');
+    }
     public function testApiResponseFailure()
     {
-        $apiHandler = $this
-            ->getMockBuilder(postcodeApiHandler::class)
-            ->setMethods(array('getApiResponse'))
-            ->getMock();
-        $response = new \stdClass();
-        $response->_embedded = array();
-        $apiHandler->method('getApiResponse')->willReturn($response);
-        $pendant = new addressPendant('11','2516 AC','Nederland');
+        $this->oMockedPostcodeApiClient->method('getAddresses')
+            ->willReturn(new \stdClass());
 
         $aExpected = array(
             'streetnumber'=>'11',
@@ -30,37 +42,32 @@ class postcodeApiHandlerTest extends \PHPUnit_Framework_TestCase
             'country'=>'Nederland',
         );
 
-        $bActual = $apiHandler->start($pendant);
-        $aActual = $pendant->getAttributesArray();
+        $bActual = $this->oApiHandler->start($this->oPendant);
+        $aActual = $this->oPendant->getAttributesArray();
         $this->assertEquals($aExpected,$aActual);
         $this->assertFalse($bActual);
     }
 
     public function testApiResponseSuccess()
     {
-        $apiHandler = $this
-            ->getMockBuilder(postcodeApiHandler::class)
-            ->setMethods(array('getApiResponse'))
-            ->getMock();
         //response from mocked api
-        $address = new \stdClass();
-        $address->street = 'Regulusweg';
-        $city = new \stdClass();
-        $city->label = "Den Haag";
-        $address->city = $city;
-        $geo = new \stdClass();
-        $geo->center = new \stdClass();
-        $geo->center->wgs84 = new \stdClass();
-        $geo->center->wgs84->coordinates = array('4.3419284','52.074648');
-        $address->geo = $geo;
-        $response = new \stdClass();
-        $response->_embedded = new \stdClass();
-        $response->_embedded->addresses = array(
-            $address
+        $oAddress = new \stdClass();
+        $oAddress->street = 'Regulusweg';
+        $oCity = new \stdClass();
+        $oCity->label = "Den Haag";
+        $oAddress->city = $oCity;
+        $oGeo = new \stdClass();
+        $oGeo->center = new \stdClass();
+        $oGeo->center->wgs84 = new \stdClass();
+        $oGeo->center->wgs84->coordinates = array('4.3419284','52.074648');
+        $oAddress->geo = $oGeo;
+        $oResponse = new \stdClass();
+        $oResponse->_embedded = new \stdClass();
+        $oResponse->_embedded->addresses = array(
+            $oAddress
         );
-
-        $apiHandler->method('getApiResponse')->willReturn($response);
-        $pendant = new addressPendant('11','2516 AC','Nederland');
+        $this->oMockedPostcodeApiClient->method('getAddresses')
+            ->willReturn($oResponse);
 
         $aExpected = array(
             'streetnumber'=>'11',
@@ -73,8 +80,8 @@ class postcodeApiHandlerTest extends \PHPUnit_Framework_TestCase
             'source'=>'PostcodeAPI.nu'
         );
 
-        $bActual = $apiHandler->start($pendant);
-        $aActual = $pendant->getAttributesArray();
+        $bActual = $this->oApiHandler->start($this->oPendant);
+        $aActual = $this->oPendant->getAttributesArray();
         $this->assertEquals($aExpected,$aActual);
         $this->assertTrue($bActual);
     }

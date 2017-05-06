@@ -49,7 +49,7 @@ class postcodeApiHandler extends zipCodeCheckerChainHandler
         return str_replace(' ', '', $zipcode);
     }
 
-    protected function getApiResponse(addressPendant $pendant):\stdClass
+    private final function getApiResponse(addressPendant $pendant):\stdClass
     {
         return $this->getApiClient()->getAddresses(
             $this->formatZipcode($pendant->getAttribute("zipcode")),
