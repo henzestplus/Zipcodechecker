@@ -7,6 +7,7 @@ use GuzzleHttp as GuzzleHTTP;
 use FH\PostcodeAPI as PostcodeApi;
 
 use Stplus\Chain\Pendant;
+use Stplus\Chain\ZipcodeChecker\addressPendant;
 use Stplus\Chain\ZipcodeChecker\zipCodeCheckerChainHandler;
 
 class postcodeApiHandler extends zipCodeCheckerChainHandler
@@ -15,8 +16,15 @@ class postcodeApiHandler extends zipCodeCheckerChainHandler
 
     public function handle(Pendant $pendant): bool
     {
-        return $this->addApiResultsTo($pendant);
+        $response = $this->getApiResponse($pendant);
+        if($this->verifyApiResponse($response)) {
+            $this->addApiResponseTo($response, $pendant);
+            return true;
+        }
+        return false;
     }
+
+
 
     private function getApiClient(): PostcodeApi\Client
     {
@@ -36,19 +44,31 @@ class postcodeApiHandler extends zipCodeCheckerChainHandler
         return $this->apiClient;
     }
 
-    private final function addApiResultsTo(Pendant $pendant):bool
+    private function formatZipcode(string $zipcode):string
     {
-        $result = $this->getApiClient()->getAddresses($pendant->getAttribute("zipcode"),
-            $pendant->getAttribute("streetnumber"));
-        if ($result && $result->_embedded && !empty($result->_embedded->addresses)) {
-            $address = reset($result->_embedded->addresses);
-            $pendant->setAttribute('streetname', $address->street);
-            $pendant->setAttribute('city', $address->city->label);
-            $pendant->setAttribute('longitude', $address->geo->center->wgs84->coordinates[0]);
-            $pendant->setAttribute('latitude', $address->geo->center->wgs84->coordinates[1]);
-            $pendant->setAttribute('source', 'PostcodeAPI.nu');
-            return true;
-        }
-        return false;
+        return str_replace(' ', '', $zipcode);
     }
+
+    protected function getApiResponse(addressPendant $pendant):\stdClass
+    {
+        return $this->getApiClient()->getAddresses(
+            $this->formatZipcode($pendant->getAttribute("zipcode")),
+            $pendant->getAttribute("streetnumber"));
+    }
+
+    private final function addApiResponseTo(\stdClass $response, addressPendant $pendant)
+    {
+        $address = reset($response->_embedded->addresses);
+        $pendant->setAttribute('streetname', $address->street);
+        $pendant->setAttribute('city', $address->city->label);
+        $pendant->setAttribute('longitude', $address->geo->center->wgs84->coordinates[0]);
+        $pendant->setAttribute('latitude', $address->geo->center->wgs84->coordinates[1]);
+        $pendant->setAttribute('source', 'PostcodeAPI.nu');
+    }
+
+    private function verifyApiResponse(\stdClass $response):bool
+    {
+        return ($response && !empty($response->_embedded->addresses));
+    }
+
 }
