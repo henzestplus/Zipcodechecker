@@ -67,7 +67,7 @@ class googleHandlerTest extends \PHPUnit_Framework_TestCase
         $this->oPendant = new addressPendant('11','2516 AC','Nederland');
     }
     public function testGoogleHandlerNoResults()
-    { return;
+    {
         $this->oMockedGoogleMapsApi->method('geocode')
             ->willReturn(new AddressCollection());
         $bActual = $this->oGoogleHandler->start($this->oPendant);
