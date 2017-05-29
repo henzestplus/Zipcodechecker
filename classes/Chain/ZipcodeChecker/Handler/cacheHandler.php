@@ -19,7 +19,7 @@ class cacheHandler extends zipCodeCheckerChainHandler
         return $this->addCachedResultsIfExistsTo($pendant);
     }
 
-    protected function getFromCache(string $key):array
+    protected function getFromCache(string $key)
     {
         return $this->memcacheD->get($key);
     }
